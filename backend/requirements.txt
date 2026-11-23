@@ -1,7 +1,8 @@
+supabase
+httpx
+groq
+python-dotenv
 fastapi
 uvicorn
-python-dotenv
-openai
-supabase
-python-dotenv
-httpx
+python-multipart
+pillow
