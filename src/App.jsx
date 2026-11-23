@@ -35,7 +35,8 @@ import MapPage from "./components/MapPage";
 import LoadingScreen from "./LoadingScreen";
 import Login from "./Login";
 
-const API = "http://127.0.0.1:8000";
+const API =
+  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 export default function App() {
 const [user, setUser] = useState(null);

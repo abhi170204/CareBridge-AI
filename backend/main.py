@@ -40,7 +40,11 @@ extra_origins = [
     if origin.strip()
 ]
 
-allowed_origins = list(set(default_origins + extra_origins))
+allow_origins=[
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://carebridge-ai.abhickbanerjee.workers.dev",
+]
 
 app.add_middleware(
     CORSMiddleware,
