@@ -28,10 +28,11 @@ app = FastAPI(
 # 2. CORS CONFIGURATION
 # ==========================================
 
+
 default_origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "https://carebridge-ai.abhickbanerjee.workers.dev"
+    "https://carebridge-ai.abhickbanerjee.workers.dev",
 ]
 
 extra_origins = [
@@ -40,18 +41,14 @@ extra_origins = [
     if origin.strip()
 ]
 
-allow_origins=[
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "https://carebridge-ai.abhickbanerjee.workers.dev",
-]
+allowed_origins = list(dict.fromkeys(default_origins + extra_origins))
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_credentials=False,
+    allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
 
