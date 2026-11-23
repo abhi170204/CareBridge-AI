@@ -1,0 +1,403 @@
+
+/* Accident Assistance Page */
+
+.accident-page {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  color: #20354a;
+}
+
+.accident-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 25px;
+}
+
+.accident-heading-icon {
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  background: #e3f7f4;
+  color: #078f87;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.accident-header h1 {
+  font: 800 25px Manrope, sans-serif;
+  margin-bottom: 7px;
+}
+
+.accident-header p {
+  color: #8291a0;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Emergency Banner */
+
+.accident-emergency {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  padding: 18px;
+  margin-bottom: 22px;
+  background: #fff2ee;
+  border: 1px solid #f3d9d0;
+  border-radius: 12px;
+  color: #a34b37;
+}
+
+.accident-emergency > div {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.accident-emergency h3 {
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.accident-emergency p {
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.accident-emergency a,
+.accident-call {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 16px;
+  background: #dc2626;
+  color: white;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.accident-emergency a:hover,
+.accident-call:hover {
+  background: #b91c1c;
+}
+
+/* Accident Form */
+
+.accident-form {
+  background: white;
+  border: 1px solid #e5ebf0;
+  border-radius: 14px;
+  padding: 25px;
+  box-shadow: 0 4px 18px rgba(32, 53, 74, 0.04);
+}
+
+.accident-form h2 {
+  font: 700 17px Manrope, sans-serif;
+  margin: 8px 0 15px;
+  color: #20354a;
+}
+
+.accident-form h2:not(:first-child) {
+  margin-top: 28px;
+}
+
+.accident-form > label:not(.accident-upload):not(.accident-consent) {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  margin: 17px 0 8px;
+  color: #30485d;
+}
+
+.accident-form select,
+.accident-form textarea {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #dfe7ed;
+  border-radius: 8px;
+  background: white;
+  color: #354a5e;
+  font-family: inherit;
+  font-size: 13px;
+  outline: none;
+}
+
+.accident-form select:focus,
+.accident-form textarea:focus {
+  border-color: #5cbab1;
+  box-shadow: 0 0 0 3px rgba(7, 143, 135, 0.08);
+}
+
+.accident-form textarea {
+  resize: vertical;
+  min-height: 85px;
+  line-height: 1.6;
+}
+
+.accident-form textarea::placeholder {
+  color: #9aa6b3;
+}
+
+/* Emergency Note */
+
+.accident-note {
+  margin-top: 15px;
+  padding: 13px;
+  background: #fff5e8;
+  border: 1px solid #f4dfbd;
+  color: #93611e;
+  border-radius: 8px;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+/* Photo Upload */
+
+.accident-upload {
+  display: flex !important;
+  align-items: center;
+  gap: 13px;
+  padding: 18px;
+  margin-top: 10px !important;
+  background: #f6fbfa;
+  border: 1px dashed #a9d5cf;
+  border-radius: 10px;
+  color: #078f87;
+  cursor: pointer;
+}
+
+.accident-upload span {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.accident-upload small {
+  display: block;
+  margin-top: 5px;
+  color: #8291a0;
+  font-size: 10px;
+  font-weight: 400;
+}
+
+.accident-upload input {
+  display: none;
+}
+
+.accident-photo-preview {
+  margin-top: 15px;
+  padding: 12px;
+  background: #f7fafb;
+  border: 1px solid #e5ebf0;
+  border-radius: 10px;
+}
+
+.accident-photo-preview img {
+  display: block;
+  max-width: 100%;
+  max-height: 260px;
+  margin: 0 auto 12px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+.accident-photo-preview button {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 12px;
+  border: 0;
+  border-radius: 7px;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* Consent */
+
+.accident-consent {
+  display: flex !important;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 22px 0 !important;
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  line-height: 1.7;
+  color: #64748b;
+  cursor: pointer;
+}
+
+.accident-consent input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: #078f87;
+  flex-shrink: 0;
+}
+
+/* Error */
+
+.accident-error {
+  padding: 12px;
+  margin: 12px 0;
+  background: #fff0ee;
+  border: 1px solid #f3d9d0;
+  border-radius: 8px;
+  color: #bb3d3d;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+/* Submit Button */
+
+.accident-submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  padding: 14px;
+  margin-top: 15px;
+  border: 0;
+  border-radius: 9px;
+  background: #078f87;
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+  transition: background 0.2s;
+}
+
+.accident-submit:hover {
+  background: #087c76;
+}
+
+.accident-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.accident-spinner {
+  animation: accident-spin 1s linear infinite;
+}
+
+@keyframes accident-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* AI Result */
+
+.accident-result {
+  margin-top: 22px;
+  padding: 20px;
+  background: #eef9f4;
+  border: 1px solid #d5eee2;
+  border-radius: 12px;
+  color: #315e50;
+}
+
+.accident-result.danger {
+  background: #fff0ee;
+  border-color: #efc8c2;
+  color: #963e32;
+}
+
+.accident-result h2 {
+  font: 700 17px Manrope, sans-serif;
+  margin-bottom: 12px;
+}
+
+.accident-result-message {
+  font-size: 13px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.accident-call {
+  margin-top: 15px;
+}
+
+.accident-disclaimer {
+  margin-top: 15px;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.accident-reset {
+  margin-top: 18px;
+  padding: 11px 15px;
+  border: 1px solid #a8cec0;
+  border-radius: 8px;
+  background: white;
+  color: #26745e;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Footer Note */
+
+.accident-footer-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 20px;
+  padding: 15px;
+  background: #edf8f6;
+  border-radius: 10px;
+  color: #247f79;
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.accident-footer-note svg {
+  flex-shrink: 0;
+}
+
+/* Responsive */
+
+@media (max-width: 720px) {
+  .accident-header {
+    align-items: flex-start;
+  }
+
+  .accident-header h1 {
+    font-size: 20px;
+  }
+
+  .accident-heading-icon {
+    width: 48px;
+    height: 48px;
+  }
+
+  .accident-emergency {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .accident-emergency a {
+    width: 100%;
+  }
+
+  .accident-form {
+    padding: 17px;
+  }
+
+  .accident-upload {
+    padding: 13px;
+  }
+}

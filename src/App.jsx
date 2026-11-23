@@ -16,7 +16,8 @@ import {
   X,
   ArrowRight,
   Stethoscope,
-  Hospital
+  Hospital,
+  Ambulance
 } from "lucide-react";
 
 import {
@@ -34,6 +35,7 @@ import "./Dashboard.jsx";
 import MapPage from "./components/MapPage";
 import LoadingScreen from "./LoadingScreen";
 import Login from "./Login";
+import AccidentAssistant from "./components/AccidentAssistant";
 
 const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
@@ -291,12 +293,12 @@ async function handleLogout() {
     setPage(value);
     setMenu(false);
   }
-
-  const navigation = [
-    { name: "Home", icon: Home },
-    { name: "AI Assistant", icon: MessageCircle },
-    { name: "Care Finder", icon: MapPin },
-    { name: "History", icon: Clock }
+    const navigation = [
+  { name: "Home", icon: Home },
+  { name: "AI Assistant", icon: MessageCircle },
+  { name: "Accident Assistance", icon: Ambulance },
+  { name: "Care Finder", icon: MapPin },
+  { name: "History", icon: Clock }
   ];
 
   const displayName =
@@ -514,6 +516,13 @@ async function handleLogout() {
               <section className="feature-grid">
 
                 <Feature
+                   icon={<Ambulance />}
+                   title="Accident Assistance"
+                   description="Report an accident and get first-aid guidance."
+                   action={() => navigate("Accident Assistance")}
+                />
+
+                <Feature
                   icon={<MessageCircle />}
                   title="Health Assistant"
                   description="Describe a health concern."
@@ -670,8 +679,8 @@ async function handleLogout() {
                       <p>{result.message}</p>
 
                       <ul>
-                        {result.reasons.map((reason, i) => (
-                          <li key={i}>{reason}</li>
+                        {(result.reasons || []).map((reason, i) => (
+                         <li key={i}>{reason}</li>
                         ))}
                       </ul>
 
@@ -709,6 +718,9 @@ async function handleLogout() {
               </div>
 
             </>
+          )}
+          {page === "Accident Assistance" && (
+            <AccidentAssistant />
           )}
 
           {page === "Care Finder" && (
