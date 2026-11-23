@@ -22,4 +22,3 @@ export default defineConfig({
     }
   }
 });
-npm run build
