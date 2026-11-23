@@ -1,32 +1,76 @@
 
 import os
+
+from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
-from dotenv import load_dotenv
+
+# Load environment variables BEFORE importing project modules
+load_dotenv()
+
 from supabase_client import supabase
 from location_router import router as location_router
 
-load_dotenv()
 
-app.include_router(location_router)
+# ==========================================
+# 1. CREATE FASTAPI APPLICATION
+# ==========================================
 
 app = FastAPI(
     title="CareBridge AI API",
-    description="Educational healthcare software prototype"
+    description="Educational healthcare software prototype",
+    version="1.0.0"
 )
+
+
+# ==========================================
+# 2. CORS CONFIGURATION
+# ==========================================
+
+default_origins = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    "https://carebridge-ai.abhickbanerjee.workers.dev"
+]
+
+extra_origins = [
+    origin.strip().rstrip("/")
+    for origin in os.getenv("FRONTEND_ORIGINS", "").split(",")
+    if origin.strip()
+]
+
+allowed_origins = list(set(default_origins + extra_origins))
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
-    allow_methods=["GET", "POST"],
+    allow_origins=allowed_origins,
+    allow_credentials=False,
+    allow_methods=["*"],
     allow_headers=["*"]
 )
+
+
+# ==========================================
+# 3. REGISTER LOCATION ROUTER
+# ==========================================
+
+app.include_router(location_router)
+
+
+# ==========================================
+# 4. HEALTH REQUEST MODEL
+# ==========================================
 
 class HealthRequest(BaseModel):
     concern: str = Field(min_length=8, max_length=2000)
     age_band: str = "Adult"
     duration: str = "Today"
+
+
+# ==========================================
+# 5. EMERGENCY WARNING KEYWORDS
+# ==========================================
 
 WARNING_TERMS = [
     "cannot breathe",
@@ -43,6 +87,11 @@ WARNING_TERMS = [
     "severe allergic reaction"
 ]
 
+
+# ==========================================
+# 6. HOME API
+# ==========================================
+
 @app.get("/")
 def home():
     return {
@@ -50,9 +99,22 @@ def home():
         "status": "success"
     }
 
+
+# ==========================================
+# 7. HEALTH CHECK API
+# ==========================================
+
 @app.get("/api/health")
 def health():
-    return {"status": "ok"}
+    return {
+        "status": "ok",
+        "message": "CareBridge AI API is healthy"
+    }
+
+
+# ==========================================
+# 8. HEALTH ASSESSMENT API
+# ==========================================
 
 @app.post("/api/assess")
 async def assess(data: HealthRequest):
@@ -64,6 +126,7 @@ async def assess(data: HealthRequest):
         if word in text
     ]
 
+    # Emergency warning detection
     if matched:
         return {
             "level": "emergency",
@@ -81,9 +144,11 @@ async def assess(data: HealthRequest):
             )
         }
 
+    # OpenAI API integration
     api_key = os.getenv("OPENAI_API_KEY", "").strip()
 
     if api_key:
+
         try:
             from openai import OpenAI
 
@@ -91,6 +156,7 @@ async def assess(data: HealthRequest):
 
             response = client.responses.create(
                 model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+
                 instructions=(
                     "Provide cautious general health information only. "
                     "Never diagnose, prescribe or say a person is safe. "
@@ -98,6 +164,7 @@ async def assess(data: HealthRequest):
                     "evaluation when appropriate. For possible emergencies, "
                     "tell the user to contact emergency services immediately."
                 ),
+
                 input=(
                     f"Age group: {data.age_band}\n"
                     f"Duration: {data.duration}\n"
@@ -118,10 +185,10 @@ async def assess(data: HealthRequest):
                 )
             }
 
-        except Exception:
-            pass
-        
+        except Exception as error:
+            print("OpenAI API Error:", error)
 
+    # Fallback response
     return {
         "level": "general",
         "message": (
@@ -138,8 +205,15 @@ async def assess(data: HealthRequest):
             "Educational demonstration only. Not a diagnosis or treatment."
         )
     }
+
+
+# ==========================================
+# 9. SUPABASE DATABASE STATUS
+# ==========================================
+
 @app.get("/database-status")
 def database_status():
+
     try:
         supabase.table("chat_history").select("id").limit(1).execute()
 
@@ -148,7 +222,10 @@ def database_status():
             "message": "CareBridge AI database connected"
         }
 
-    except Exception:
+    except Exception as error:
+
+        print("Supabase Database Error:", error)
+
         raise HTTPException(
             status_code=503,
             detail="Database connection failed"
