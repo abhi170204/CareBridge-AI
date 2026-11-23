@@ -1,3 +1,4 @@
+
 import { useEffect, useState } from "react";
 import {
   AlertTriangle,
@@ -10,10 +11,10 @@ import {
   Send,
   LoaderCircle
 } from "lucide-react";
+
 import "./AccidentAssistant.css";
 
-const API =
-  import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
 
 function AccidentAssistant() {
   const [patientCategory, setPatientCategory] = useState("Adult");
@@ -26,19 +27,20 @@ function AccidentAssistant() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState(null);
-  const [photoPreview, setPhotoPreview] = useState("");   
+  const [photo, setPhoto] = useState(null);
+  const [photoPreview, setPhotoPreview] = useState("");
 
-useEffect(() => {
-  if (!photo) {
-    setPhotoPreview("");
-    return;
-  }
+  useEffect(() => {
+    if (!photo) {
+      setPhotoPreview("");
+      return;
+    }
 
-  const imageUrl = URL.createObjectURL(photo);
-  setPhotoPreview(imageUrl);
+    const imageUrl = URL.createObjectURL(photo);
+    setPhotoPreview(imageUrl);
 
-  return () => URL.revokeObjectURL(imageUrl);
-}, [photo]);
+    return () => URL.revokeObjectURL(imageUrl);
+  }, [photo]);
 
   function handlePhoto(e) {
     const selected = e.target.files?.[0];
@@ -92,13 +94,10 @@ useEffect(() => {
         formData.append("photo", photo);
       }
 
-      const response = await fetch(
-        `${API}/api/accident-assist`,
-        {
-          method: "POST",
-          body: formData
-        }
-      );
+      const response = await fetch(`${API}/api/accident-assist`, {
+        method: "POST",
+        body: formData
+      });
 
       const data = await response.json();
 
@@ -112,9 +111,7 @@ useEffect(() => {
 
     } catch (err) {
       console.error("Accident assistance error:", err);
-      setError(
-        err.message || "Unable to connect to the backend."
-      );
+      setError(err.message || "Unable to connect to the backend.");
     } finally {
       setLoading(false);
     }
@@ -167,10 +164,7 @@ useEffect(() => {
         </a>
       </div>
 
-      <form
-        className="accident-form"
-        onSubmit={submitAccident}
-      >
+      <form className="accident-form" onSubmit={submitAccident}>
 
         <h2>Patient Information</h2>
 
@@ -230,9 +224,7 @@ useEffect(() => {
           maxLength={2000}
         />
 
-        <label>
-          Any serious warning signs? Mention them if present.
-        </label>
+        <label>Any serious warning signs? Mention them if present.</label>
 
         <textarea
           rows="3"
@@ -261,7 +253,6 @@ useEffect(() => {
         <h2>Upload Injury Photograph</h2>
 
         <label className="accident-upload">
-
           <Camera size={27} />
 
           <span>
@@ -280,16 +271,11 @@ useEffect(() => {
             capture="environment"
             onChange={handlePhoto}
           />
-
         </label>
 
         {photo && (
           <div className="accident-photo-preview">
-
-            <img
-              src={URL.createObjectURL(photo)}
-              alt="Selected injury"
-            />
+            <img src={photoPreview} alt="Selected injury" />
 
             <button
               type="button"
@@ -298,12 +284,10 @@ useEffect(() => {
               <X size={16} />
               Remove image
             </button>
-
           </div>
         )}
 
         <label className="accident-consent">
-
           <input
             type="checkbox"
             checked={consent}
@@ -315,7 +299,6 @@ useEffect(() => {
             to the AI service for processing. I understand that this is
             not a medical diagnosis.
           </span>
-
         </label>
 
         {error && (
@@ -345,11 +328,7 @@ useEffect(() => {
       </form>
 
       {result && (
-        <div
-          className={`accident-result ${
-            result.emergency ? "danger" : ""
-          }`}
-        >
+        <div className={`accident-result ${result.emergency ? "danger" : ""}`}>
 
           <h2>
             {result.emergency
