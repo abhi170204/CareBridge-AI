@@ -1,0 +1,417 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.loading-page {
+  min-height: 100vh;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  color: #102c48;
+  background:
+    radial-gradient(ellipse at 50% 40%, #ffffff 0%, #f2fbfd 45%, #e5f5f8 100%);
+}
+
+/* Background decoration */
+
+.loading-page::before {
+  content: "";
+  position: absolute;
+  width: 650px;
+  height: 650px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #b9f5eb, #b8e9fa);
+  filter: blur(100px);
+  opacity: 0.45;
+  top: -280px;
+  right: -180px;
+}
+
+.loading-page::after {
+  content: "";
+  position: absolute;
+  width: 550px;
+  height: 550px;
+  border-radius: 50%;
+  background: #a9e8f5;
+  filter: blur(110px);
+  opacity: 0.35;
+  bottom: -280px;
+  left: -180px;
+}
+
+/* Main content */
+
+.loading-content {
+  width: min(720px, 90%);
+  text-align: center;
+  position: relative;
+  z-index: 3;
+  padding: 35px 15px;
+}
+
+/* Logo */
+
+.logo-animation {
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(35, 185, 177, 0.18);
+  box-shadow:
+    0 15px 50px rgba(16, 137, 163, 0.12),
+    inset 0 0 30px rgba(255, 255, 255, 0.9);
+  animation: floating 3s ease-in-out infinite;
+}
+
+.loading-logo {
+  width: 125px;
+  height: 125px;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  border-radius: 50%;
+}
+
+.logo-glow {
+  position: absolute;
+  inset: -12px;
+  border: 1.5px solid #48c9be;
+  border-radius: 50%;
+  animation: glowPulse 2.5s ease-out infinite;
+}
+
+@keyframes floating {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes glowPulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+/* Heartbeat */
+
+.heartbeat-line {
+  width: min(540px, 100%);
+  height: 65px;
+  margin: 0 auto 12px;
+  color: #17b8b0;
+  overflow: hidden;
+}
+
+.heartbeat-line svg {
+  width: 100%;
+  height: 100%;
+}
+
+.heartbeat-path {
+  stroke-dasharray: 800;
+  stroke-dashoffset: 800;
+  animation: heartbeatDraw 2.5s linear infinite;
+}
+
+@keyframes heartbeatDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* Branding */
+
+.loading-brand {
+  font-size: clamp(38px, 6vw, 62px);
+  font-weight: 800;
+  letter-spacing: -2.5px;
+  color: #102e50;
+  margin: 12px 0;
+}
+
+.loading-brand span {
+  background: linear-gradient(120deg, #13b9b1, #0789b5);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.loading-tagline {
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: #57748e;
+  margin: 15px 0 45px;
+}
+
+/* Progress bar */
+
+.loading-progress {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  max-width: 620px;
+  margin: auto auto 22px;
+}
+
+.progress-track {
+  flex: 1;
+  height: 10px;
+  border-radius: 30px;
+  background: #dcebf0;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  position: relative;
+  border-radius: 30px;
+  background: linear-gradient(90deg, #078eaa, #12c5b3, #58dfc7);
+  transition: width 0.1s linear;
+  box-shadow: 0 0 12px rgba(18, 197, 179, 0.4);
+}
+
+.progress-light {
+  position: absolute;
+  right: 0;
+  top: -4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow: 0 0 15px #16cdbd;
+}
+
+.progress-number {
+  min-width: 48px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #087f9f;
+}
+
+/* Loading message */
+
+.loading-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #647f95;
+  margin-bottom: 45px;
+}
+
+.loading-spinner {
+  width: 19px;
+  height: 19px;
+  border: 2px solid #ccece9;
+  border-top-color: #0daea9;
+  border-radius: 50%;
+  animation: spinner 0.8s linear infinite;
+}
+
+@keyframes spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Feature section */
+
+.loading-features {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 35px;
+  padding: 22px 20px;
+  max-width: 590px;
+  margin: auto;
+  border: 1px solid rgba(39, 167, 177, 0.13);
+  background: rgba(255, 255, 255, 0.55);
+  border-radius: 18px;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 10px 35px rgba(33, 115, 145, 0.05);
+}
+
+.loading-feature {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-align: left;
+}
+
+.loading-feature span {
+  font-size: 30px;
+  font-weight: 700;
+  color: #12aaa7;
+}
+
+.loading-feature p {
+  font-size: 12px;
+  line-height: 1.6;
+  font-weight: 600;
+  color: #365c79;
+}
+
+.feature-divider {
+  width: 1px;
+  height: 38px;
+  background: #c5e0e5;
+}
+
+/* Floating medical symbols */
+
+.medical-symbol {
+  position: absolute;
+  font-size: 60px;
+  font-weight: 700;
+  color: rgba(16, 174, 181, 0.12);
+  z-index: 1;
+  animation: symbolFloat 5s ease-in-out infinite;
+}
+
+.symbol-one {
+  top: 12%;
+  right: 13%;
+}
+
+.symbol-two {
+  bottom: 15%;
+  left: 9%;
+  animation-delay: 1s;
+}
+
+.symbol-three {
+  bottom: 20%;
+  right: 9%;
+  animation-delay: 2s;
+}
+
+@keyframes symbolFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+/* Bottom decoration */
+
+.loading-bottom-wave {
+  position: absolute;
+  bottom: -75px;
+  left: -10%;
+  width: 120%;
+  height: 125px;
+  border-radius: 50% 50% 0 0;
+  background: linear-gradient(100deg, #13bdb4, #078bbd);
+  opacity: 0.85;
+  z-index: 1;
+}
+
+.bottom-heartbeat {
+  position: absolute;
+  left: 50%;
+  top: -35px;
+  transform: translateX(-50%);
+  font-size: 55px;
+  color: white;
+}
+
+/* Mobile responsive */
+
+@media (max-width: 600px) {
+  .loading-content {
+    width: 94%;
+    padding: 20px 5px;
+  }
+
+  .logo-animation {
+    width: 135px;
+    height: 135px;
+  }
+
+  .loading-logo {
+    width: 95px;
+    height: 95px;
+  }
+
+  .loading-brand {
+    font-size: 38px;
+    letter-spacing: -1.5px;
+  }
+
+  .loading-tagline {
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+  }
+
+  .loading-features {
+    gap: 9px;
+    padding: 15px 8px;
+  }
+
+  .loading-feature {
+    gap: 5px;
+  }
+
+  .loading-feature span {
+    font-size: 22px;
+  }
+
+  .loading-feature p {
+    font-size: 9px;
+  }
+
+  .feature-divider {
+    height: 30px;
+  }
+
+  .loading-message {
+    font-size: 11px;
+    margin-bottom: 30px;
+  }
+
+  .medical-symbol {
+    font-size: 35px;
+  }
+
+  .heartbeat-line {
+    height: 48px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+}
