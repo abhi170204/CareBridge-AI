@@ -13,7 +13,9 @@ import {
   ArrowRight,
   Stethoscope,
   Hospital,
-  Ambulance
+  Ambulance,
+  Moon,
+  Sun
 } from "lucide-react";
 
 import {
@@ -48,7 +50,21 @@ const [loginError, setLoginError] = useState("");
 const [loginLoading, setLoginLoading] = useState(false);
 const [page, setPage] = useState("Home");
 const [menu, setMenu] = useState(false);
+const [darkMode, setDarkMode] = useState(() => {
+  return localStorage.getItem("carebridge-theme") === "dark";
+});
 
+useEffect(() => {
+  document.documentElement.setAttribute(
+    "data-theme",
+    darkMode ? "dark" : "light"
+  );
+
+  localStorage.setItem(
+    "carebridge-theme",
+    darkMode ? "dark" : "light"
+  );
+}, [darkMode]);
 const [search, setSearch] = useState("");
 
 const recaptchaRef = useRef(null);
@@ -346,17 +362,28 @@ async function handleLogout() {
           </div>
 
           <div className="user-section">
-            <span>
-              Welcome, {displayName}
-            </span>
 
-            <button
-              className="logout-btn"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
-          </div>
+  <button
+    className="theme-toggle"
+    onClick={() => setDarkMode((previous) => !previous)}
+    title={darkMode ? "Switch to light mode" : "Switch to dark mode"}
+    aria-label="Change appearance"
+  >
+    {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+  </button>
+
+  <span>
+    Welcome, {displayName}
+  </span>
+
+  <button
+    className="logout-btn"
+    onClick={handleLogout}
+  >
+    Logout
+  </button>
+
+</div>
 
         </header>
 

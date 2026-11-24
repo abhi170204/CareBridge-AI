@@ -1121,3 +1121,269 @@ footer {
     padding: 13px;
   }
 }
+
+/* ==========================================
+   CAREBRIDGE AI - LIGHT / DARK THEME
+   Additional styles: preserve existing CSS
+========================================== */
+
+:root {
+  color-scheme: light;
+  --cb-bg: #f4f7fa;
+  --cb-surface: #ffffff;
+  --cb-text: #20354a;
+  --cb-muted: #8291a0;
+  --cb-border: #e5ebf0;
+  --cb-input: #ffffff;
+  --cb-soft: #eef8f7;
+  --cb-shadow: 0 8px 25px rgba(15, 40, 60, 0.06);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --cb-bg: #101a27;
+  --cb-surface: #192839;
+  --cb-text: #e7edf5;
+  --cb-muted: #a1b1c2;
+  --cb-border: #304254;
+  --cb-input: #122131;
+  --cb-soft: #1b373b;
+  --cb-shadow: 0 8px 25px rgba(0, 0, 0, 0.18);
+}
+
+body {
+  background: var(--cb-bg);
+  color: var(--cb-text);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.app {
+  background: var(--cb-bg);
+  color: var(--cb-text);
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+/* Main layout */
+
+[data-theme="dark"] .main,
+[data-theme="dark"] .content {
+  background: var(--cb-bg);
+  color: var(--cb-text);
+}
+
+[data-theme="dark"] .sidebar,
+[data-theme="dark"] .topbar,
+[data-theme="dark"] .stat,
+[data-theme="dark"] .panel,
+[data-theme="dark"] .feature-card,
+[data-theme="dark"] .search,
+[data-theme="dark"] .accident-form {
+  background: var(--cb-surface);
+  color: var(--cb-text);
+  border-color: var(--cb-border);
+  box-shadow: var(--cb-shadow);
+}
+
+/* Sidebar */
+
+[data-theme="dark"] .brand h2,
+[data-theme="dark"] .breadcrumb strong,
+[data-theme="dark"] .section-title,
+[data-theme="dark"] .stat h3,
+[data-theme="dark"] .feature-card h3,
+[data-theme="dark"] .panel h3,
+[data-theme="dark"] .provider h3,
+[data-theme="dark"] .page-title h1 {
+  color: var(--cb-text);
+}
+
+[data-theme="dark"] .brand small,
+[data-theme="dark"] .nav-heading,
+[data-theme="dark"] .breadcrumb,
+[data-theme="dark"] .stat p,
+[data-theme="dark"] .feature-card p,
+[data-theme="dark"] .page-title p,
+[data-theme="dark"] .provider p,
+[data-theme="dark"] .provider small {
+  color: var(--cb-muted);
+}
+
+[data-theme="dark"] .nav-item {
+  color: var(--cb-muted);
+}
+
+[data-theme="dark"] .nav-item:hover,
+[data-theme="dark"] .nav-item.active {
+  background: #203b4b;
+  color: #69d7c8;
+}
+
+[data-theme="dark"] .sidebar-bottom {
+  background: var(--cb-soft);
+  color: #8de0d3;
+}
+
+[data-theme="dark"] .sidebar-bottom p {
+  color: #b3c9c9;
+}
+
+/* Feature cards */
+
+[data-theme="dark"] .feature-icon {
+  background: #203e43;
+  color: #65d5c5;
+}
+
+[data-theme="dark"] .feature-card span,
+[data-theme="dark"] .page-title > span {
+  color: #65d5c5;
+}
+
+[data-theme="dark"] .disclaimer {
+  background: #1b373b;
+  color: #a8e2d7;
+}
+
+/* Forms and search */
+
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select {
+  background: var(--cb-input);
+  color: var(--cb-text);
+  border-color: var(--cb-border);
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #8499ad;
+}
+
+[data-theme="dark"] .search input {
+  background: transparent;
+}
+
+[data-theme="dark"] .upload,
+[data-theme="dark"] .accident-upload {
+  background: #172e38;
+  border-color: #42656a;
+  color: var(--cb-text);
+}
+
+[data-theme="dark"] .accident-form label {
+  color: var(--cb-text);
+}
+
+/* Results and emergency information */
+
+[data-theme="dark"] .result,
+[data-theme="dark"] .accident-result {
+  background: #193a35;
+  border-color: #315e51;
+  color: #c1eadd;
+}
+
+[data-theme="dark"] .result.danger,
+[data-theme="dark"] .emergency-card,
+[data-theme="dark"] .accident-alert {
+  background: #402a2d;
+  border-color: #704449;
+  color: #ffc6bd;
+}
+
+/* Login screen */
+
+[data-theme="dark"] .login-page,
+[data-theme="dark"] .login-container {
+  background: linear-gradient(135deg, #101a27, #172b3d);
+}
+
+[data-theme="dark"] .login-card {
+  background: var(--cb-surface);
+  color: var(--cb-text);
+  border: 1px solid var(--cb-border);
+}
+
+[data-theme="dark"] .login-card h1,
+[data-theme="dark"] .login-card label {
+  color: var(--cb-text);
+}
+
+[data-theme="dark"] .login-card p,
+[data-theme="dark"] .login-card small,
+[data-theme="dark"] .login-divider {
+  color: var(--cb-muted);
+}
+
+[data-theme="dark"] .google-button {
+  background: #25394c !important;
+  color: #ffffff !important;
+  border-color: #42566a !important;
+}
+
+/* Footer and history */
+
+[data-theme="dark"] footer {
+  background: var(--cb-bg);
+  color: var(--cb-muted);
+  border-color: var(--cb-border);
+}
+
+[data-theme="dark"] .history-item {
+  border-color: var(--cb-border);
+  color: var(--cb-text);
+}
+
+/* Theme button */
+
+.theme-toggle {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--cb-border);
+  border-radius: 12px;
+  background: var(--cb-surface);
+  color: #078f87;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-toggle:hover {
+  background: var(--cb-soft);
+  transform: translateY(-2px);
+}
+
+[data-theme="dark"] .theme-toggle {
+  background: #203b4b;
+  color: #f5cf72;
+  border-color: #40566a;
+}
+
+.theme-toggle:focus-visible {
+  outline: 3px solid #36a99e;
+  outline-offset: 3px;
+}
+
+/* Mobile */
+
+@media (max-width: 720px) {
+  .theme-toggle {
+    width: 38px;
+    height: 38px;
+  }
+
+  .user-section span {
+    display: none;
+  }
+
+  .user-section {
+    gap: 8px;
+  }
+
+  .topbar {
+    gap: 10px;
+  }
+}
