@@ -6,12 +6,8 @@ import {
   Home,
   MessageCircle,
   MapPin,
-  Clock,
   ShieldCheck,
-  Upload,
   Search,
-  Activity,
-  Phone,
   Menu,
   X,
   ArrowRight,
@@ -36,8 +32,7 @@ import MapPage from "./components/MapPage";
 import LoadingScreen from "./LoadingScreen";
 import Login from "./Login";
 import AccidentAssistant from "./components/AccidentAssistant";
-
-const API = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
+import Chatbot from "./components/Chatbot";
 
 export default function App() {
 const [user, setUser] = useState(null);
@@ -54,16 +49,6 @@ const [loginLoading, setLoginLoading] = useState(false);
 const [page, setPage] = useState("Home");
 const [menu, setMenu] = useState(false);
 
-const [concern, setConcern] = useState("");
-const [age, setAge] = useState("Adult");
-const [duration, setDuration] = useState("Just now");
-
-const [image, setImage] = useState(null);
-const [error, setError] = useState("");
-const [loading, setLoading] = useState(false);
-const [result, setResult] = useState(null);
-
-const [history, setHistory] = useState([]);
 const [search, setSearch] = useState("");
 
 const recaptchaRef = useRef(null);
@@ -231,63 +216,11 @@ async function handleLogout() {
     setOtp("");
     setOtpSent(false);
     setConfirmation(null);
-    setResult(null);
   } catch (err) {
     console.error("Logout failed:", err);
   }
 }
 
-
-  async function submitConcern(e) {
-    e.preventDefault();
-
-    setError("");
-    setResult(null);
-
-    if (concern.trim().length < 8) {
-      setError("Please describe your concern in more detail.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const response = await fetch(`${API}/api/assess`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          concern,
-          age_band: age,
-          duration
-        })
-      });
-
-      if (!response.ok) {
-        throw new Error("Backend error");
-      }
-
-      const data = await response.json();
-
-      setResult(data);
-
-      setHistory((prev) => [
-        {
-          concern,
-          date: new Date().toLocaleString(),
-          level: data.level
-        },
-        ...prev
-      ]);
-
-    } catch (err) {
-      console.error("Backend error:", err);
-      setError("Backend not connected. Please start the Python server.");
-    } finally {
-      setLoading(false);
-    }
-  }
 
   function navigate(value) {
     setPage(value);
@@ -297,10 +230,8 @@ async function handleLogout() {
   { name: "Home", icon: Home },
   { name: "AI Assistant", icon: MessageCircle },
   { name: "Accident Assistance", icon: Ambulance },
-  { name: "Care Finder", icon: MapPin },
-  { name: "History", icon: Clock }
-  ];
-
+    { name: "Care Finder", icon: MapPin }
+];
   const displayName =
     user?.displayName ||
     user?.email ||
@@ -536,13 +467,6 @@ async function handleLogout() {
                   action={() => navigate("Care Finder")}
                 />
 
-                <Feature
-                  icon={<Clock />}
-                  title="Recent Activity"
-                  description="Review your recent entries."
-                  action={() => navigate("History")}
-                />
-
               </section>
 
               <div className="disclaimer">
@@ -556,171 +480,11 @@ async function handleLogout() {
             </>
           )}
 
-          {page === "AI Assistant" && (
-            <>
-
-              <PageTitle
-                title="Health Assistant"
-                subtitle="Describe your concern to receive general educational information."
-              />
-
-              <div className="assistant-layout">
-
-                <section className="panel">
-
-                  <h3>
-                    <MessageCircle /> Describe your concern
-                  </h3>
-
-                  <form onSubmit={submitConcern}>
-
-                    <label>
-                      What happened or what are you experiencing?
-                    </label>
-
-                    <textarea
-                      value={concern}
-                      onChange={(e) => setConcern(e.target.value)}
-                      placeholder="Describe your health concern..."
-                      rows="5"
-                    />
-
-                    <div className="form-row">
-
-                      <div>
-                        <label>Age group</label>
-
-                        <select
-                          value={age}
-                          onChange={(e) => setAge(e.target.value)}
-                        >
-                          <option>Child</option>
-                          <option>Teen</option>
-                          <option>Adult</option>
-                          <option>Older adult</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label>Duration</label>
-
-                        <select
-                          value={duration}
-                          onChange={(e) => setDuration(e.target.value)}
-                        >
-                          <option>Just now</option>
-                          <option>Today</option>
-                          <option>1–3 days ago</option>
-                          <option>More than 3 days ago</option>
-                        </select>
-                      </div>
-
-                    </div>
-
-                    <label className="upload">
-
-                      <Upload />
-
-                      <span>
-                        {image ? image.name : "Upload an image (optional)"}
-
-                        <small>
-                          Preview only. No image diagnosis is performed.
-                        </small>
-                      </span>
-
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) =>
-                          setImage(e.target.files?.[0] || null)
-                        }
-                      />
-
-                    </label>
-
-                    {image && (
-                      <button
-                        type="button"
-                        className="remove-image"
-                        onClick={() => setImage(null)}
-                      >
-                        Remove selected image
-                      </button>
-                    )}
-
-                    {error && (
-                      <p className="error">{error}</p>
-                    )}
-
-                    <button
-                      className="primary-btn full"
-                      disabled={loading}
-                    >
-                      {loading ? "Processing..." : "Review information"}
-                      <ArrowRight size={17} />
-                    </button>
-
-                  </form>
-
-                  {result && (
-                    <div
-                      className={`result ${
-                        result.level === "emergency" ? "danger" : ""
-                      }`}
-                    >
-
-                      <h3>
-                        {result.level === "emergency"
-                          ? "Emergency warning"
-                          : "General information"}
-                      </h3>
-
-                      <p>{result.message}</p>
-
-                      <ul>
-                        {(result.reasons || []).map((reason, i) => (
-                         <li key={i}>{reason}</li>
-                        ))}
-                      </ul>
-
-                      <small>{result.disclaimer}</small>
-
-                    </div>
-                  )}
-
-                </section>
-
-                <section className="side-panel">
-
-                  <div className="emergency-card">
-                    <Phone />
-
-                    <h3>Emergency assistance</h3>
-
-                    <p>
-                      If someone is unconscious, struggling to breathe,
-                      or has severe bleeding, do not wait for this website.
-                    </p>
-
-                    <a href="tel:112">Call 112 in India</a>
-                  </div>
-
-                  <div className="panel">
-                    <h3>Important reminders</h3>
-                    <p>Share clear information.</p>
-                    <p>Do not include personal identifiers.</p>
-                    <p>Seek professional help when concerned.</p>
-                  </div>
-
-                </section>
-
-              </div>
-
-            </>
-          )}
           {page === "Accident Assistance" && (
             <AccidentAssistant />
+          )}
+          {page === "AI Assistant" && (
+            <Chatbot user={user} />
           )}
 
           {page === "Care Finder" && (
@@ -772,40 +536,6 @@ async function handleLogout() {
               </div>
 
             <MapPage />
-            </>
-          )}
-
-          {page === "History" && (
-            <>
-
-              <PageTitle
-                title="Recent Activity"
-                subtitle="Your entries in this browser session."
-              />
-
-              <section className="panel">
-
-                {history.length === 0 ? (
-                  <p>No activity available yet.</p>
-                ) : (
-                  history.map((item, i) => (
-                    <div className="history-item" key={i}>
-
-                      <Activity />
-
-                      <div>
-                        <strong>{item.concern}</strong>
-                        <small>{item.date}</small>
-                      </div>
-
-                      <span>{item.level}</span>
-
-                    </div>
-                  ))
-                )}
-
-              </section>
-
             </>
           )}
 

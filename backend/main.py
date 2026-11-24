@@ -24,6 +24,15 @@ load_dotenv()
 from supabase_client import supabase
 from location_router import router as location_router
 
+import json
+import uuid
+
+import firebase_admin
+from firebase_admin import credentials, auth as firebase_auth
+from fastapi import Header
+from fastapi import Depends
+
+
 
 # ==========================================
 # 1. CREATE FASTAPI APPLICATION
@@ -73,6 +82,75 @@ groq_client = (
 
 
 # ==========================================
+# FIREBASE ADMIN CONFIGURATION
+# ==========================================
+
+firebase_admin_initialized = False
+
+try:
+    firebase_credentials_json = os.getenv(
+        "FIREBASE_SERVICE_ACCOUNT_JSON",
+        ""
+    )
+
+    if not firebase_credentials_json:
+        raise ValueError("Firebase credentials are missing")
+
+    service_account_info = json.loads(firebase_credentials_json)
+
+    try:
+        firebase_admin.get_app()
+    except ValueError:
+        credential = credentials.Certificate(service_account_info)
+        firebase_admin.initialize_app(credential)
+
+    firebase_admin_initialized = True
+    print("Firebase Admin initialized successfully")
+
+except Exception as error:
+    print("Firebase Admin initialization error:", str(error))
+
+
+# ==========================================
+# FIREBASE TOKEN VERIFICATION
+# ==========================================
+
+def verify_firebase_user(authorization: Optional[str] = Header(None)):
+
+    if not firebase_admin_initialized:
+        raise HTTPException(
+            status_code=503,
+            detail="Firebase authentication is not configured."
+        )
+
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(
+            status_code=401,
+            detail="Authentication token is required."
+        )
+
+    token = authorization.split(" ", 1)[1].strip()
+
+    if not token:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid authentication token."
+        )
+
+    try:
+        decoded_token = firebase_auth.verify_id_token(token)
+        return decoded_token["uid"]
+
+    except Exception:
+        raise HTTPException(
+            status_code=401,
+            detail="Authentication failed. Please log in again."
+        )
+
+
+
+
+# ==========================================
 # 3. CORS CONFIGURATION
 # ==========================================
 
@@ -116,6 +194,15 @@ class HealthRequest(BaseModel):
     concern: str = Field(min_length=8, max_length=2000)
     age_band: str = "Adult"
     duration: str = "Today"
+    
+
+# ==========================================
+# CHATBOT REQUEST MODEL
+# ==========================================
+
+class ChatRequest(BaseModel):
+    message: str = Field(min_length=1, max_length=2000)
+    conversation_id: Optional[str] = None
 
 
 # ==========================================
@@ -160,6 +247,7 @@ ACCIDENT_WARNING_TERMS = [
     "crushed",
     "severe burn"
 ]
+
 
 
 def detect_emergency(text: str, terms: list):
@@ -341,6 +429,54 @@ def assess(data: HealthRequest):
             "or substitute for professional medical care."
         )
     }
+
+# ==========================================
+# CHATBOT SYSTEM PROMPT
+# ==========================================
+
+CHATBOT_SYSTEM_PROMPT = """
+You are CareBridge AI, a responsible healthcare
+information assistant.
+
+Your purpose is to provide general health education,
+wellness information and safe first-aid guidance.
+
+STRICT RULES:
+
+1. Never claim to provide a confirmed diagnosis.
+2. Never prescribe medicines or dosages.
+3. Explain possible causes with uncertainty.
+4. Ask relevant follow-up questions.
+5. Identify serious medical warning signs.
+6. Recommend professional medical consultation.
+7. Never claim that a patient is definitely safe.
+8. Use simple, understandable language.
+9. Never delay emergency medical assistance.
+10. Do not request unnecessary personal information.
+11. Respect user privacy.
+12. Do not invent medical facts.
+
+EMERGENCY SAFETY:
+
+If a user describes possible severe chest pain,
+difficulty breathing, unconsciousness, stroke symptoms,
+severe bleeding, seizure or another life-threatening
+situation, advise immediate emergency medical assistance.
+
+For India, advise calling 112.
+
+RESPONSE STYLE:
+
+- Friendly and conversational.
+- Clear paragraphs.
+- Short headings where useful.
+- Ask one relevant follow-up question when needed.
+- Avoid unnecessary technical terminology.
+
+You are an educational AI assistant, not a replacement
+for a qualified healthcare professional.
+"""
+
 
 
 # ==========================================
@@ -704,3 +840,311 @@ def database_status():
             status_code=503,
             detail="Database connection failed"
         )
+
+# ==========================================
+# CAREBRIDGE AI CHATBOT API
+# ==========================================
+
+def get_chat_rows(user_id, conversation_id):
+
+    response = (
+        supabase.table("chat_history")
+        .select("*")
+        .eq("firebase_uid", user_id)
+        .eq("conversation_id", conversation_id)
+        .order("created_at", desc=False)
+        .limit(30)
+        .execute()
+    )
+
+    return response.data or []
+
+
+# ==========================================
+# 1. SEND CHAT MESSAGE
+# ==========================================
+
+@app.post("/api/chat")
+async def chat(
+    data: ChatRequest,
+    user_id: str = Depends(verify_firebase_user)
+):
+
+    message = data.message.strip()
+
+    if not message:
+        raise HTTPException(
+            status_code=400,
+            detail="Message cannot be empty."
+        )
+
+    try:
+
+        if data.conversation_id:
+            try:
+                conversation_id = str(
+                    uuid.UUID(data.conversation_id)
+                )
+            except ValueError:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Invalid conversation ID."
+                )
+
+            previous_rows = get_chat_rows(
+                user_id,
+                conversation_id
+            )
+
+            if not previous_rows:
+                raise HTTPException(
+                    status_code=404,
+                    detail="Conversation not found."
+                )
+
+            title = previous_rows[0].get("title") or message[:60]
+
+        else:
+            conversation_id = str(uuid.uuid4())
+            title = message[:60]
+
+        if detect_emergency(message, WARNING_TERMS):
+            ai_response = emergency_response()["message"]
+        else:
+
+            previous_rows = get_chat_rows(
+                user_id,
+                conversation_id
+            ) if data.conversation_id else []
+
+            messages = [
+                {
+                    "role": "system",
+                    "content": CHATBOT_SYSTEM_PROMPT
+                }
+            ]
+
+            for row in previous_rows[-10:]:
+
+                if row.get("user_message"):
+                    messages.append({
+                        "role": "user",
+                        "content": row["user_message"]
+                    })
+
+                if row.get("assistant_response"):
+                    messages.append({
+                        "role": "assistant",
+                        "content": row["assistant_response"]
+                    })
+
+            messages.append({
+                "role": "user",
+                "content": message
+            })
+
+            ai_response = await run_in_threadpool(
+                generate_ai_response,
+                messages
+            )
+
+        supabase.table("chat_history").insert({
+            "firebase_uid": user_id,
+            "conversation_id": conversation_id,
+            "title": title,
+            "user_message": message,
+            "assistant_response": ai_response
+        }).execute()
+
+        return {
+            "status": "success",
+            "conversation_id": conversation_id,
+            "title": title,
+            "message": message,
+            "response": ai_response
+        }
+
+    except HTTPException:
+        raise
+
+    except Exception as error:
+        print("Chat API error:", str(error))
+
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to process chat message."
+        )
+
+
+# ==========================================
+# 2. GET SAVED CHAT HISTORY
+# ==========================================
+
+@app.get("/api/chat/history")
+def chat_history(
+    user_id: str = Depends(verify_firebase_user)
+):
+
+    try:
+
+        response = (
+            supabase.table("chat_history")
+            .select(
+                "conversation_id,title,user_message,created_at"
+            )
+            .eq("firebase_uid", user_id)
+            .order("created_at", desc=True)
+            .limit(500)
+            .execute()
+        )
+
+        conversations = {}
+
+        for row in response.data or []:
+
+            conversation_id = row.get("conversation_id")
+
+            if not conversation_id:
+                continue
+
+            if conversation_id not in conversations:
+
+                conversations[conversation_id] = {
+                    "conversation_id": conversation_id,
+                    "title": row.get("title") or "New conversation",
+                    "created_at": row.get("created_at")
+                }
+
+        return {
+            "status": "success",
+            "conversations": list(conversations.values())
+        }
+
+    except Exception as error:
+        print("Chat history error:", str(error))
+
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to retrieve chat history."
+        )
+
+
+# ==========================================
+# 3. OPEN PREVIOUS CONVERSATION
+# ==========================================
+
+@app.get("/api/chat/{conversation_id}")
+def get_conversation(
+    conversation_id: str,
+    user_id: str = Depends(verify_firebase_user)
+):
+
+    try:
+
+        conversation_id = str(uuid.UUID(conversation_id))
+
+        rows = get_chat_rows(
+            user_id,
+            conversation_id
+        )
+
+        if not rows:
+            raise HTTPException(
+                status_code=404,
+                detail="Conversation not found."
+            )
+
+        messages = []
+
+        for row in rows:
+
+            messages.append({
+                "role": "user",
+                "content": row["user_message"],
+                "created_at": row.get("created_at")
+            })
+
+            messages.append({
+                "role": "assistant",
+                "content": row["assistant_response"],
+                "created_at": row.get("created_at")
+            })
+
+        return {
+            "status": "success",
+            "conversation_id": conversation_id,
+            "title": rows[0].get("title") or "New conversation",
+            "messages": messages
+        }
+
+    except HTTPException:
+        raise
+
+    except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid conversation ID."
+        )
+
+    except Exception as error:
+        print("Conversation retrieval error:", str(error))
+
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to retrieve conversation."
+        )
+
+
+# ==========================================
+# 4. DELETE CONVERSATION
+# ==========================================
+
+@app.delete("/api/chat/{conversation_id}")
+def delete_conversation(
+    conversation_id: str,
+    user_id: str = Depends(verify_firebase_user)
+):
+
+    try:
+
+        conversation_id = str(uuid.UUID(conversation_id))
+
+        existing = get_chat_rows(
+            user_id,
+            conversation_id
+        )
+
+        if not existing:
+            raise HTTPException(
+                status_code=404,
+                detail="Conversation not found."
+            )
+
+        supabase.table("chat_history").delete().eq(
+            "firebase_uid", user_id
+        ).eq(
+            "conversation_id", conversation_id
+        ).execute()
+
+        return {
+            "status": "success",
+            "message": "Conversation deleted successfully."
+        }
+
+    except HTTPException:
+        raise
+
+    except ValueError:
+        raise HTTPException(
+            status_code=400,
+            detail="Invalid conversation ID."
+        )
+
+    except Exception as error:
+        print("Conversation deletion error:", str(error))
+
+        raise HTTPException(
+            status_code=500,
+            detail="Unable to delete conversation."
+        )
+
