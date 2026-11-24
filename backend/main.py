@@ -34,6 +34,19 @@ app = FastAPI(
     description="Healthcare assistance and accident guidance prototype",
     version="2.0.0"
 )
+from fastapi.middleware.cors import CORSMiddleware
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "https://carebridge-ai.abhickbanerjee.workers.dev"
+    ],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # ==========================================
