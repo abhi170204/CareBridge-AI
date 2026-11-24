@@ -50,6 +50,10 @@ function Chatbot({ user }) {
 
   const apiRequest = async (url, options = {}) => {
     const token = await getToken();
+    console.log("Firebase user:", user?.uid);
+    console.log("Firebase token received:", !!token);
+    console.log("Firebase token length:", token?.length);
+    console.log("API URL:", `${API}${url}`);
 
     const response = await fetch(`${API}${url}`, {
       ...options,
