@@ -1,13 +1,12 @@
 
-import { useState } from "react";
 import {
   HeartPulse,
   ShieldCheck,
   ArrowRight,
   Phone,
-  Mail,
   LockKeyhole,
-  Sparkles
+  Sparkles,
+  UserRound
 } from "lucide-react";
 import "./Login.css";
 
@@ -26,8 +25,6 @@ export default function Login({
   onVerifyOtp,
   onResetPhone
 }) {
-  const [showPhoneLogin, setShowPhoneLogin] = useState(false);
-
   return (
     <div className="login-page">
       <div className="login-shell">
