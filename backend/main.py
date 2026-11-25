@@ -31,7 +31,7 @@ import firebase_admin
 from firebase_admin import credentials, auth as firebase_auth
 from fastapi import Header
 from fastapi import Depends
-from .medical_routes import router as medical_router
+from medical_routes import router as medical_router
 
 
 # ==========================================
