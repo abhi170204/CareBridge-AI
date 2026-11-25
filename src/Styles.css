@@ -1387,3 +1387,81 @@ body {
     gap: 10px;
   }
 }
+
+
+/* CAREBRIDGE - MEDICAL PAGES THEME FIX */
+
+.medical-page {
+  background: var(--cb-bg);
+  color: var(--cb-text);
+  min-height: 100%;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.medical-page h1,
+.medical-page h2,
+.medical-page h3,
+.medical-page p,
+.medical-page label,
+.medical-page span {
+  color: inherit;
+}
+
+.medical-page .medical-upload,
+.medical-page .provider-card,
+.medical-page .medical-card,
+.medical-page .report-card,
+.medical-page .consultation-card,
+.medical-page .appointment-card,
+.medical-page .panel {
+  background: var(--cb-surface);
+  color: var(--cb-text);
+  border: 1px solid var(--cb-border);
+  box-shadow: var(--cb-shadow);
+}
+
+.medical-page input,
+.medical-page textarea,
+.medical-page select {
+  background: var(--cb-input);
+  color: var(--cb-text);
+  border: 1px solid var(--cb-border);
+}
+
+.medical-page input::placeholder,
+.medical-page textarea::placeholder {
+  color: var(--cb-muted);
+}
+
+.medical-page .muted,
+.medical-page .description {
+  color: var(--cb-muted);
+}
+
+.medical-page button {
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+[data-theme="dark"] .medical-page {
+  background: var(--cb-bg);
+  color: var(--cb-text);
+}
+
+[data-theme="dark"] .medical-page .medical-upload,
+[data-theme="dark"] .medical-page .provider-card,
+[data-theme="dark"] .medical-page .medical-card,
+[data-theme="dark"] .medical-page .report-card,
+[data-theme="dark"] .medical-page .consultation-card,
+[data-theme="dark"] .medical-page .appointment-card {
+  background: var(--cb-surface);
+  color: var(--cb-text);
+  border-color: var(--cb-border);
+}
+
+[data-theme="dark"] .medical-page input,
+[data-theme="dark"] .medical-page textarea,
+[data-theme="dark"] .medical-page select {
+  background: var(--cb-input);
+  color: var(--cb-text);
+  border-color: var(--cb-border);
+}

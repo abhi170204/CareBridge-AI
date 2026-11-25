@@ -68,7 +68,6 @@ export default function HospitalAppointments() {
       await medicalApi.bookAppointment({
         provider_id: selected.id,
         appointment_type: "hospital",
-        appointment_type: "virtual",
         ...form
       });
 
