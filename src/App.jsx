@@ -24,8 +24,7 @@ import {
   onAuthStateChanged,
   signOut,
   GoogleAuthProvider,
-  getRedirectResult,
-  signInWithRedirect,
+  signInWithPopup,
   RecaptchaVerifier,
   signInWithPhoneNumber,
   updateProfile
@@ -79,23 +78,12 @@ const recaptchaRef = useRef(null);
   }, []);
 
   useEffect(() => {
-    let active = true;
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       setAuthLoading(false);
     });
 
-    getRedirectResult(auth).catch((err) => {
-      console.error("Google login error:", err);
-      if (active) {
-        setLoginError(err.message || "Google login failed.");
-      }
-    });
-
-    return () => {
-      active = false;
-      unsubscribe();
-    };
+    return () => unsubscribe();
   }, []);
 
   
@@ -128,7 +116,7 @@ async function handleGoogleLogin() {
 
   try {
     const provider = new GoogleAuthProvider();
-    await signInWithRedirect(auth, provider);
+    await signInWithPopup(auth, provider);
   } catch (err) {
     console.error("Google login error:", err);
     setLoginError(err.message || "Google login failed.");
