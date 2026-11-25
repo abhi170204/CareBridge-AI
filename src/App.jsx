@@ -15,7 +15,9 @@ import {
   Hospital,
   Ambulance,
   Moon,
-  Sun
+  Sun,
+  FileText,
+  Video
 } from "lucide-react";
 
 import {
@@ -35,6 +37,9 @@ import LoadingScreen from "./LoadingScreen";
 import Login from "./Login";
 import AccidentAssistant from "./components/AccidentAssistant";
 import Chatbot from "./components/Chatbot";
+import HospitalAppointments from "./components/HospitalAppointments";
+import MedicalRecords from "./components/MedicalRecords";
+import VirtualConsultation from "./components/VirtualConsultation";
 
 export default function App() {
 const [user, setUser] = useState(null);
@@ -242,12 +247,17 @@ async function handleLogout() {
     setPage(value);
     setMenu(false);
   }
-    const navigation = [
+  
+const navigation = [
   { name: "Home", icon: Home },
   { name: "AI Assistant", icon: MessageCircle },
   { name: "Accident Assistance", icon: Ambulance },
-    { name: "Care Finder", icon: MapPin }
+  { name: "Care Finder", icon: MapPin },
+  { name: "Medical Records", icon: FileText },
+  { name: "Hospital Appointments", icon: Hospital },
+  { name: "Virtual Consultation", icon: Video }
 ];
+
   const displayName =
     user?.displayName ||
     user?.email ||
@@ -511,8 +521,21 @@ async function handleLogout() {
             <AccidentAssistant />
           )}
           {page === "AI Assistant" && (
-            <Chatbot user={user} />
+             <Chatbot user={user} />
           )}
+
+          {page === "Medical Records" && (
+             <MedicalRecords />
+          )}
+
+          {page === "Hospital Appointments" && (
+             <HospitalAppointments />
+          )}
+
+          {page === "Virtual Consultation" && (
+             <VirtualConsultation />
+          )}
+
 
           {page === "Care Finder" && (
             <>

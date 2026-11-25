@@ -157,7 +157,7 @@ export default function Login({
                     <label>Full name</label>
 
                     <div className="login-input">
-                      <Mail size={18} />
+                      <UserRound size={18} />
 
                       <input
                         type="text"

@@ -31,7 +31,7 @@ import firebase_admin
 from firebase_admin import credentials, auth as firebase_auth
 from fastapi import Header
 from fastapi import Depends
-
+from .medical_routes import router as medical_router
 
 
 # ==========================================
@@ -43,19 +43,10 @@ app = FastAPI(
     description="Healthcare assistance and accident guidance prototype",
     version="2.0.0"
 )
-from fastapi.middleware.cors import CORSMiddleware
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "https://carebridge-ai.abhickbanerjee.workers.dev"
-    ],
-    allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+app.include_router(medical_router)
+
+from fastapi.middleware.cors import CORSMiddleware
 
 
 # ==========================================
@@ -173,7 +164,7 @@ allowed_origins = list(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
